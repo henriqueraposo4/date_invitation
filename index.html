@@ -16,6 +16,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
     }
     .container {
       text-align: center;
@@ -29,10 +30,14 @@
       margin-bottom: 30px;
       font-size: 2em;
     }
+    .button-container {
+      position: relative;
+      /* The width will be set dynamically based on button widths + gap */
+      margin: 0 auto;
+      height: 50px; /* fixed height for the button container */
+    }
     .btn {
-      display: inline-block;
       padding: 12px 25px;
-      margin: 0 15px;
       font-size: 1em;
       color: #fff;
       background-color: #FF5722;
@@ -47,9 +52,58 @@
 </head>
 <body>
   <div class="container">
-    <h1>Do you want to go on a date this weekend? ❤️😊</h1>
-    <a href="yes.html" class="btn">Yes</a>
-    <a href="no.html" class="btn">No</a>
+    <h1>Do you want to go on a date this weekend? ❤️😉</h1>
+    <div class="button-container" id="buttonContainer">
+      <a href="yes.html" class="btn" id="yesBtn" style="position: absolute;">Yes</a>
+      <a href="no.html" class="btn" id="noBtn" style="position: absolute;">No</a>
+    </div>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const buttonContainer = document.getElementById('buttonContainer');
+      const yesBtn = document.getElementById('yesBtn');
+      const noBtn = document.getElementById('noBtn');
+      const gap = 70; // extra whitespace between the buttons
+
+      // Temporarily set positions to static to measure natural dimensions.
+      yesBtn.style.position = "static";
+      noBtn.style.position = "static";
+      
+      const yesWidth = yesBtn.offsetWidth;
+      const noWidth = noBtn.offsetWidth;
+      
+      // Set the button container's width to snugly wrap both buttons plus the gap.
+      const containerWidth = yesWidth + gap + noWidth;
+      buttonContainer.style.width = containerWidth + "px";
+      
+      // Now absolutely position the buttons inside the container.
+      yesBtn.style.position = "absolute";
+      yesBtn.style.left = "0px";
+      yesBtn.style.top = "0px";
+      
+      noBtn.style.position = "absolute";
+      noBtn.style.left = (yesWidth + gap) + "px";
+      noBtn.style.top = "0px";
+      
+      // On mouseover, switch the "No" button to fixed positioning and move it anywhere in the viewport.
+      noBtn.addEventListener("mouseover", function() {
+        // If not already fixed, convert its position.
+        if (noBtn.style.position !== "fixed") {
+          const containerRect = buttonContainer.getBoundingClientRect();
+          // Calculate current absolute position relative to the viewport.
+          const currentLeft = containerRect.left + parseFloat(noBtn.style.left);
+          const currentTop = containerRect.top + parseFloat(noBtn.style.top);
+          noBtn.style.position = "fixed";
+          noBtn.style.left = currentLeft + "px";
+          noBtn.style.top = currentTop + "px";
+        }
+        // Now, reposition the button randomly anywhere in the viewport.
+        const randomX = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+        const randomY = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+        noBtn.style.left = randomX + "px";
+        noBtn.style.top = randomY + "px";
+      });
+    });
+  </script>
 </body>
 </html>
